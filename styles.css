@@ -32,11 +32,3 @@ h1 {
     margin: 5px;
     cursor: pointer;
 }
-
-#upload-section {
-    margin-top: 20px;
-}
-
-#upload-section input {
-    margin-right: 10px;
-}
