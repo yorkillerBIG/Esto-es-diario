@@ -3,16 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Feliz Noche</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Enlaza el archivo CSS -->
+    <title>Juego de la Culebrita con Fotos</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Contenedor del mensaje -->
-    <div class="message-container">
-        <div class="message"><i><a href="https://youtu.be/DRdeAbYihDk?si=yvIDZ26vmVIHBYBU">feliz noche </a></i><b> para la mujer mas hermosa</b></div>
+    <h1>Juego de la Culebrita con Fotos</h1>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="controls">
+            <button id="up">↑</button>
+            <button id="left">←</button>
+            <button id="down">↓</button>
+            <button id="right">→</button>
+        </div>
+        <div id="upload-section">
+            <input type="file" id="imageUpload" accept="image/*">
+            <button id="startButton">Comenzar Juego</button>
+        </div>
     </div>
-
-    <!-- Enlaza el archivo JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
