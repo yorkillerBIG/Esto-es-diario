@@ -1,59 +1,130 @@
-// Crear estrellas dinámicamente
-const starCount = 100; // Número de estrellas
-const container = document.body;
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-for (let i = 0; i < starCount; i++) {
-    const star = document.createElement('div');
-    star.classList.add('star');
-    star.style.top = `${Math.random() * 100}%`;
-    star.style.left = `${Math.random() * 100}%`;
-    star.style.animationDuration = `${Math.random() * 2 + 1}s`; // Duración aleatoria
-    container.appendChild(star);
+const gridSize = 20; // Tamaño de cada celda del grid
+const canvasSize = 400; // Tamaño del canvas
+const rows = canvasSize / gridSize;
+const cols = canvasSize / gridSize;
+
+let snake = [{ x: 10, y: 10 }]; // Cabeza de la serpiente
+let direction = { x: 0, y: 0 }; // Dirección inicial
+let food = { x: 5, y: 5 }; // Posición de la comida
+let images = []; // Almacena las imágenes de la serpiente
+let gameStarted = false;
+
+// Cargar una imagen para la serpiente
+function loadImage(file) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+    });
 }
 
-// Crear flores dinámicamente
-const flowerCount = 30; // Número de flores
-const messageContainer = document.querySelector('.message-container');
-
-for (let i = 0; i < flowerCount; i++) {
-    const flower = document.createElement('div');
-    flower.classList.add('sunflower');
-    flower.style.left = `${Math.random() * 100}%`; // Posición horizontal aleatoria
-    flower.style.animationDuration = `${Math.random() * 3 + 2}s`; // Velocidad de caída aleatoria
-    container.appendChild(flower);
-
-    // Detectar cuando la flor llega al fondo
-    flower.addEventListener('animationiteration', () => {
-        flower.style.top = '-100px'; // Reinicia la posición de la flor
-        flower.style.left = `${Math.random() * 100}%`; // Nueva posición horizontal aleatoria
-    });
-
-    // Detectar colisión con el mensaje
-    flower.addEventListener('animationiteration', () => {
-        const flowerRect = flower.getBoundingClientRect();
-        const messageRect = messageContainer.getBoundingClientRect();
-
-        // Si la flor está sobre el mensaje
-        if (
-            flowerRect.bottom > messageRect.top &&
-            flowerRect.top < messageRect.bottom &&
-            flowerRect.right > messageRect.left &&
-            flowerRect.left < messageRect.right
-        ) {
-            // Desviar la flor hacia los lados
-            flower.style.animationName = 'fall-side';
-            flower.style.animationTimingFunction = 'ease-in-out';
-            flower.style.animationDuration = '2s';
-            flower.style.transform = `translateX(${Math.random() > 0.5 ? 100 : -100}px)`;
+// Dibujar la serpiente
+function drawSnake() {
+    snake.forEach((segment, index) => {
+        if (images[index]) {
+            ctx.drawImage(images[index], segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
+        } else {
+            ctx.fillStyle = "green";
+            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
         }
     });
 }
 
-// Animación para desviar las flores hacia los lados
-const styleSheet = document.styleSheets[0];
-styleSheet.insertRule(`
-    @keyframes fall-side {
-        0% { transform: translateY(0) translateX(0); }
-        100% { transform: translateY(100vh) translateX(${Math.random() > 0.5 ? 100 : -100}px); }
+// Dibujar la comida
+function drawFood() {
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
+}
+
+// Mover la serpiente
+function moveSnake() {
+    const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
+
+    // Verificar colisión con los bordes
+    if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+        alert("¡Perdiste!");
+        resetGame();
+        return;
     }
-`, styleSheet.cssRules.length);
+
+    // Verificar colisión consigo misma
+    if (snake.some(segment => segment.x === head.x && segment.y === head.y)) {
+        alert("¡Perdiste!");
+        resetGame();
+        return;
+    }
+
+    // Verificar si come la comida
+    if (head.x === food.x && head.y === food.y) {
+        snake.unshift(head);
+        placeFood();
+    } else {
+        snake.unshift(head);
+        snake.pop();
+    }
+}
+
+// Colocar comida en una posición aleatoria
+function placeFood() {
+    food = {
+        x: Math.floor(Math.random() * cols),
+        y: Math.floor(Math.random() * rows),
+    };
+}
+
+// Reiniciar el juego
+function resetGame() {
+    snake = [{ x: 10, y: 10 }];
+    direction = { x: 0, y: 0 };
+    placeFood();
+    gameStarted = false;
+}
+
+// Actualizar el juego
+function update() {
+    if (!gameStarted) return;
+
+    ctx.clearRect(0, 0, canvasSize, canvasSize);
+    moveSnake();
+    drawSnake();
+    drawFood();
+}
+
+// Controles
+document.getElementById("up").addEventListener("click", () => {
+    if (direction.y === 0) direction = { x: 0, y: -1 };
+});
+document.getElementById("down").addEventListener("click", () => {
+    if (direction.y === 0) direction = { x: 0, y: 1 };
+});
+document.getElementById("left").addEventListener("click", () => {
+    if (direction.x === 0) direction = { x: -1, y: 0 };
+});
+document.getElementById("right").addEventListener("click", () => {
+    if (direction.x === 0) direction = { x: 1, y: 0 };
+});
+
+// Subir imagen
+document.getElementById("imageUpload").addEventListener("change", async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const img = await loadImage(file);
+        images.push(img);
+    }
+});
+
+// Comenzar juego
+document.getElementById("startButton").addEventListener("click", () => {
+    if (images.length > 0) {
+        gameStarted = true;
+    } else {
+        alert("Sube una imagen primero.");
+    }
+});
+
+// Bucle del juego
+setInterval(update, 100);
