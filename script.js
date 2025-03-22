@@ -9,28 +9,13 @@ const cols = canvasSize / gridSize;
 let snake = [{ x: 10, y: 10 }]; // Cabeza de la serpiente
 let direction = { x: 0, y: 0 }; // Dirección inicial
 let food = { x: 5, y: 5 }; // Posición de la comida
-let images = []; // Almacena las imágenes de la serpiente
 let gameStarted = false;
-
-// Cargar una imagen para la serpiente
-function loadImage(file) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.src = URL.createObjectURL(file);
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-    });
-}
 
 // Dibujar la serpiente
 function drawSnake() {
-    snake.forEach((segment, index) => {
-        if (images[index]) {
-            ctx.drawImage(images[index], segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
-        } else {
-            ctx.fillStyle = "green";
-            ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
-        }
+    ctx.fillStyle = "green";
+    snake.forEach(segment => {
+        ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize);
     });
 }
 
@@ -108,22 +93,9 @@ document.getElementById("right").addEventListener("click", () => {
     if (direction.x === 0) direction = { x: 1, y: 0 };
 });
 
-// Subir imagen
-document.getElementById("imageUpload").addEventListener("change", async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const img = await loadImage(file);
-        images.push(img);
-    }
-});
-
 // Comenzar juego
-document.getElementById("startButton").addEventListener("click", () => {
-    if (images.length > 0) {
-        gameStarted = true;
-    } else {
-        alert("Sube una imagen primero.");
-    }
+document.addEventListener("keydown", (event) => {
+    if (!gameStarted) gameStarted = true;
 });
 
 // Bucle del juego
