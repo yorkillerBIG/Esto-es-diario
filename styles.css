@@ -1,69 +1,42 @@
-/* Estilos generales */
 body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
     margin: 0;
     padding: 0;
-    height: 100vh;
+}
+
+h1 {
+    margin-top: 20px;
+}
+
+#game-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    background: linear-gradient(180deg, #000428, #004e92); /* Fondo de cielo nocturno */
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
-    position: relative;
+    margin-top: 20px;
 }
 
-/* Contenedor del mensaje */
-.message-container {
-    text-align: center;
-    z-index: 2;
-    position: relative;
+#gameCanvas {
+    border: 2px solid #000;
+    background-color: #fff;
 }
 
-/* Estilo del mensaje */
-.message {
-    font-size: 3em;
-    color: #ffffff; /* Color dorado */
-    text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700;
-    animation: float 3s ease-in-out infinite;
+#controls {
+    margin-top: 20px;
 }
 
-/* Animación para el mensaje */
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+#controls button {
+    font-size: 24px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
 }
 
-/* Estilo de los girasoles */
-.sunflower {
-    position: absolute;
-    width: 50px; /* Tamaño más pequeño para la lluvia */
-    height: 50px;
-    background: url('https://static.vecteezy.com/system/resources/previews/026/414/498/non_2x/cartoon-sunflower-illustration-png.png') no-repeat center center; /* Imagen local */
-    background-size: contain;
-    cursor: pointer; /* Cambia el cursor al pasar sobre la flor */
-    top: -100px; /* Comienzan arriba de la pantalla */
-    animation: fall linear infinite;
+#upload-section {
+    margin-top: 20px;
 }
 
-/* Animación para la caída de las flores */
-@keyframes fall {
-    to {
-        transform: translateY(100vh); /* Caen hasta el fondo de la pantalla */
-    }
-}
-
-/* Estrellas titilantes */
-.star {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: white;
-    border-radius: 50%;
-    animation: twinkle 2s infinite ease-in-out;
-}
-
-/* Animación para las estrellas */
-@keyframes twinkle {
-    0%, 100% { opacity: 0; }
-    50% { opacity: 1; }
+#upload-section input {
+    margin-right: 10px;
 }
